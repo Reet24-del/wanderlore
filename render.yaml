@@ -1,0 +1,29 @@
+services:
+  - type: web
+    name: wanderlore
+    runtime: docker
+    plan: free
+    region: singapore
+    dockerfilePath: ./deploy/render/Dockerfile
+    dockerContext: .
+    healthCheckPath: /healthz
+    autoDeployTrigger: off
+    envVars:
+      - key: WANDERLORE_HOSTED
+        value: "1"
+      - key: WANDERLORE_DATA
+        value: /tmp/wanderlore
+      - key: WANDERLORE_TEMPORARY_STORAGE
+        value: "1"
+      - key: WANDERLORE_NARRATOR
+        value: google
+      - key: WANDERLORE_MODEL
+        value: gemma-4-26b-a4b-it
+      - key: WANDERLORE_PAIR_CODE
+        generateValue: true
+      - key: GOOGLE_API_KEY
+        sync: false
+      - key: ELEVENLABS_API_KEY
+        sync: false
+      - key: ELEVENLABS_VOICE_ID
+        value: CwhRBWXzGAHq8TQ4Fs17
