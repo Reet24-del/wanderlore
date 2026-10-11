@@ -93,7 +93,7 @@ def _generate(context):
             r=httpx.post('https://generativelanguage.googleapis.com/v1beta/models/'+quote(MODEL,safe='')+':generateContent',
                 headers={'x-goog-api-key':os.environ['GOOGLE_API_KEY']},
                 json={'contents':[{'role':'user','parts':[{'text':SYSTEM+'\n'+json.dumps(prompt,ensure_ascii=False)}]}],
-                      'generationConfig':{'temperature':0.75,'maxOutputTokens':2048}},timeout=60,trust_env=False)
+                      'generationConfig':{'temperature':0.75,'maxOutputTokens':512,'thinkingConfig':{'thinkingLevel':'minimal'}}},timeout=60,trust_env=False)
             r.raise_for_status()
             candidate=r.json()['candidates'][0]
             narrative=''.join(p.get('text','') for p in candidate.get('content',{}).get('parts',[]) if not p.get('thought'))
