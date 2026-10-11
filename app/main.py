@@ -181,11 +181,6 @@ def beat(walk_id:str,body:BeatRequest):
             if not body.fix: raise HTTPException(422,'A current GPS fix is required for each chapter.')
             accept_fix(w,body.fix)
             feature=geo.nearest(store.get_pack(w['pack_id']),body.fix.lon,body.fix.lat) if w['pack_id'] else None
-            points=w['positions']; recent=[p for p in points if p['timestamp']>=time.time()-35]
-            if body.automatic and not body.final and n and len(recent)>=3 and recent[-1]['timestamp']-recent[0]['timestamp']>=25:
-                movement=max(geo.distance([recent[0]['lon'],recent[0]['lat']],[p['lon'],p['lat']]) for p in recent)
-                if movement<max(12,min(30,body.fix.accuracy)):
-                    store.save(w);return {'waiting':True,'reason':'Take your time. The story will continue when you move.'}
         else:
             p=SAMPLE_POINTS[n%len(SAMPLE_POINTS)]
             feature={'name':SAMPLE_NAMES[n%len(SAMPLE_NAMES)],'distance_m':0,'kind':'sample location'}
