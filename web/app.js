@@ -108,7 +108,7 @@ function renderWalk(){
  document.querySelector('#closing')?.addEventListener('click',()=>next(false,true).catch(report));
  document.querySelector('#finish')?.addEventListener('click',()=>finish().catch(report));
  document.querySelector('#auto')?.addEventListener('change',event=>{auto=event.target.checked;schedule()});
- document.querySelector('#save-notes')?.addEventListener('click',async()=>{try{walk=await send(`/walks/${walk.id}`,{notes:document.querySelector('#notes').value},'PATCH');document.querySelector('#note-status').textContent='Reflection saved on this laptop.'}catch(err){report(err)}});
+ document.querySelector('#save-notes')?.addEventListener('click',async()=>{try{walk=await send(`/walks/${walk.id}`,{notes:document.querySelector('#notes').value},'PATCH');document.querySelector('#note-status').textContent='Reflection saved with your walk.'}catch(err){report(err)}});
  document.querySelector('#new-walk')?.addEventListener('click',()=>{audio.pause();walk=null;currentAudio=null;message('');location.hash='#walk';home()});
  app.querySelectorAll('[data-replay]').forEach(el=>el.onclick=()=>{currentAudio=el.dataset.replay;audio.src=currentAudio;audio.hidden=false;audio.play().catch(()=>message('Press play to listen.'))});
 }
@@ -162,7 +162,7 @@ window.addEventListener('pagehide',()=>{if(walk?.status==='active')fetch(`/api/w
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&walk?.status==='active'){auto=false;stopTimer();audio.pause();togglePause().then(()=>message('Walk paused while the page was hidden. Resume when you’re ready.')).catch(report)}});
 document.querySelector('#setup-button').onclick=()=>setup().catch(report);dialog.querySelector('.close').onclick=()=>dialog.close();
 audio.addEventListener('ended',schedule);
-audio.addEventListener('error',()=>{if(currentAudio)message('Audio could not load. Keep the laptop connected, then press Listen again.')});
+audio.addEventListener('error',()=>{if(currentAudio)message('Audio could not load. Check your connection, then press Listen again.')});
 async function init(){
  app.innerHTML='<p class="loading">Finding the beginning…</p>';
  try{await refreshHealth();if(!health.voices?.some(v=>v.id===choices.voice&&v.available!==false))choices.voice=health.voices?.find(v=>v.available!==false)?.id||'af_heart';choices.engine=health.model_ready&&(health.voice_ready||choices.voice==='elevenlabs'&&health.elevenlabs_ready)?'local':'sample';await route()}
