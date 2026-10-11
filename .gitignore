@@ -10,3 +10,11 @@ certs/
 .env.*
 !.env.example
 .entire/
+
+# Local agent state and generated development artifacts
+.codex/
+.DS_Store
+*.log
+*.download
+.coverage
+submission/*.zip

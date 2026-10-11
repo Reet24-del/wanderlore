@@ -1,0 +1,4 @@
+{$WANDERLORE_DOMAIN} {
+    reverse_proxy ollama:8766
+    header Strict-Transport-Security "max-age=31536000"
+}

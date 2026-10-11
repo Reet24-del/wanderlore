@@ -1,0 +1,43 @@
+services:
+  ollama:
+    image: ollama/ollama:0.11.10
+    restart: unless-stopped
+    environment:
+      OLLAMA_NO_CLOUD: '1'
+      OLLAMA_HOST: 0.0.0.0:11434
+    volumes:
+      - ollama:/root/.ollama
+  app:
+    build: ../..
+    restart: unless-stopped
+    # Sharing this network namespace keeps the model's endpoint on localhost.
+    network_mode: service:ollama
+    depends_on:
+      - ollama
+    env_file: ../../.env
+    environment:
+      WANDERLORE_HOSTED: '1'
+      WANDERLORE_MODEL: gemma3:1b
+      OLLAMA_URL: http://127.0.0.1:11434
+    volumes:
+      - walks:/app/data
+      - ../../models/kokoro:/app/models/kokoro:ro
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    ports:
+      - '80:80'
+      - '443:443'
+    environment:
+      WANDERLORE_DOMAIN: ${WANDERLORE_DOMAIN:?Set WANDERLORE_DOMAIN to your domain}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - app
+volumes:
+  walks:
+  ollama:
+  caddy_data:
+  caddy_config:
